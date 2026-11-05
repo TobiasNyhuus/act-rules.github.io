@@ -43,7 +43,7 @@ While the rule, and [Success Criterion 2.5.5 Target Size (enhanced)][sc255], app
 
 ### Assumptions
 
-- This rule assumes that [focusable][] `widget` are effectively clickable. If a widget is [focusable][] without being clickable, it may fail this rule while [Success Criterion 2.5.5 Target Size (enhanced)][sc255] is satisfied.
+- This rule assumes that elements [observed as pointer events targets][observed as a pointer events target] are effectively clickable. If such an element is not clickable, it may fail this rule while [Success Criterion 2.5.5 Target Size (enhanced)][sc255] is satisfied.
 
 ### Accessibility Support
 
@@ -383,6 +383,57 @@ This button has been clipped, leaving a [clickable area][] containing a 45×45px
 		Hello
 	</div>
 </body>
+```
+
+#### Passed Example 13
+
+Each option in this listbox has a clickable area of 80 by 44 CSS pixels. The focusable listbox is only 40 CSS pixels wide. It has no pointer action of its own and is outside the applicability of this rule.
+
+```html
+<style>
+	#choices {
+		width: 40px;
+		padding-top: 8px;
+	}
+	[role='option'] {
+		box-sizing: border-box;
+		width: 80px;
+		height: 44px;
+		border: 1px solid;
+	}
+	[aria-selected='true'] {
+		font-weight: bold;
+	}
+</style>
+<div id="choices" role="listbox" aria-label="Fruit" tabindex="0" aria-activedescendant="apple">
+	<div id="apple" role="option" tabindex="-1" aria-selected="true">Apple</div>
+	<div id="pear" role="option" tabindex="-1" aria-selected="false">Pear</div>
+</div>
+<script>
+	const listbox = document.querySelector('#choices')
+	const options = Array.from(listbox.querySelectorAll('[role="option"]'))
+
+	function selectOption(option) {
+		options.forEach(item => item.setAttribute('aria-selected', String(item === option)))
+		listbox.setAttribute('aria-activedescendant', option.id)
+	}
+
+	options.forEach(option => {
+		option.addEventListener('click', () => {
+			selectOption(option)
+			listbox.focus()
+		})
+	})
+
+	listbox.addEventListener('keydown', event => {
+		const index = options.findIndex(option => option.id === listbox.getAttribute('aria-activedescendant'))
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			event.preventDefault()
+			const step = event.key === 'ArrowDown' ? 1 : -1
+			selectOption(options[Math.max(0, Math.min(options.length - 1, index + step))])
+		}
+	})
+</script>
 ```
 
 ### Failed

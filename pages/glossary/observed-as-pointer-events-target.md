@@ -10,10 +10,12 @@ input_aspects:
 
 An element is _observed as a pointer events target_ when all the following conditions are true:
 
-- the element is a [semantic `widget`][semantic role]; and
+- the element has one of the [semantic roles][semantic role] listed below; and
 - the element is [focusable][]; and
 - the element [computed value][] of the `pointer-events` CSS property is `auto`; and
 - through scrolling, it is possible to have parts of the element's [border box][] which intersect the viewport but do not intersect by the [border boxes][] any element that appears later in the [painting order][] and has a [computed][computed value] `pointer-events` of `auto`.
+
+The roles are `button`, `checkbox`, `combobox`, `link`, `menuitem`, `menuitemcheckbox`, `menuitemradio`, `option`, `radio`, `scrollbar`, `searchbox`, `separator`, `slider`, `spinbutton`, `switch`, `tab`, and `textbox`. The focusability condition also applies to `separator`.
 
 #### Background
 
@@ -21,6 +23,8 @@ This definition tries to capture which HTML elements can actually respond to poi
 
 - Sometimes, the element that handles the event is not the element that appears to react to it, but an ancestor (or descendant) capturing the event during propagation or bubbling. In the most extreme case, the `body` element of a page could be the only one with an event handler, acting differently depending on where the event actually occurred. In such a case, a button would be perceived by users as something that can be targeted by a pointer event, while technically it is the `body` element which is targeted.
 - It is not possible to query the list of event listeners on a given element. Some User Agents offer ways to monitor events fired at a given element, but none offer a way to query for event listeners. Additionally, an event listener might ultimately do nothing and thus, for users, the corresponding element wouldn't look like it could be targeted by pointer events (since it effectively wouldn't react to them).
+
+The list covers a subset of roles commonly used for direct pointer interaction. In a listbox, selecting an option is a pointer action on the option. Focus on the listbox itself may only support keyboard navigation, so the listbox role is excluded.
 
 As a consequence, this definition has these two known limitations:
 
